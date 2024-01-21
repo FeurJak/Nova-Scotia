@@ -1,12 +1,12 @@
 [package]
-name = "nova-scotia"
-version = "0.5.0"
+name = "nova-scotia-without-wasm"
+version = "0.5.1"
 edition = "2021"
-authors = ["Nalin <novascotia@nibnalin.me>"]
+authors = [""]
 description = "Middleware to compile Circom circuits to Nova zkSNARK scheme"
 documentation = "https://github.com/nalinbhardwaj/Nova-Scotia/blob/main/README.md"
 readme = "README.md"
-repository = "https://github.com/nalinbhardwaj/Nova-Scotia"
+repository = "https://github.com/FeurJak/Nova-Scotia"
 license-file = "LICENSE"
 keywords = ["zkSNARKs", "cryptography", "proofs"]
 
@@ -16,7 +16,7 @@ keywords = ["zkSNARKs", "cryptography", "proofs"]
 anyhow = "1.0.65"
 bellperson = { version = "0.25", default-features = false }
 byteorder = "1.4.3"
-ff = { version = "0.13", features = ["derive"]}
+ff = { version = "0.13", features = ["derive"] }
 hex-literal = "0.3.4"
 itertools = "0.9.0"
 nova-snark = "0.23.0"
@@ -25,13 +25,6 @@ num-traits = "0.2.15"
 pasta_curves = "0.5"
 serde = "1.0"
 serde_json = "1.0.85"
-
-[target.'cfg(target_family = "wasm")'.dependencies]
-wasm-bindgen = { version = "0.2.81", features = ["serde-serialize"]}
-rayon = "1.5"
-wasm-bindgen-rayon = { version = "1.0"}
-wasm-bindgen-futures = "0.4"
-js-sys = "0.3"
 
 [features]
 default = []

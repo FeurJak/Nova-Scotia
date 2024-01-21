@@ -38,7 +38,6 @@ pub fn generate_witness_from_bin<Fr: PrimeField>(
     load_witness_from_file(witness_output)
 }
 
-#[cfg(not(target_family = "wasm"))]
 pub fn generate_witness_from_wasm<Fr: PrimeField>(
     witness_wasm: &FileLocation,
     witness_input_json: &String,
@@ -168,7 +167,6 @@ pub(crate) fn load_witness_from_bin_reader<Fr: PrimeField, R: Read>(
     Ok(result)
 }
 
-#[cfg(not(target_family = "wasm"))]
 /// load r1cs file by filename with autodetect encoding (bin or json)
 pub fn load_r1cs<G1, G2>(filename: &FileLocation) -> R1CS<<G1 as Group>::Scalar>
 where
@@ -186,8 +184,18 @@ where
     }
 }
 
-#[cfg(target_family = "wasm")]
-pub use crate::circom::wasm::load_r1cs;
+/// load r1cs from bin file by filename
+fn load_r1cs_from_bin_file<G1, G2>(filename: &Path) -> R1CS<<G1 as Group>::Scalar>
+where
+    G1: Group<Base = <G2 as Group>::Scalar>,
+    G2: Group<Base = <G1 as Group>::Scalar>,
+{
+    let reader = OpenOptions::new()
+        .read(true)
+        .open(filename)
+        .expect("unable to open.");
+    load_r1cs_from_bin::<_, G1, G2>(BufReader::new(reader))
+}
 
 /// load r1cs from json file by filename
 fn load_r1cs_from_json_file<Fr: PrimeField>(filename: &Path) -> R1CS<Fr> {
@@ -229,19 +237,6 @@ fn load_r1cs_from_json<Fr: PrimeField, R: Read>(reader: R) -> R1CS<Fr> {
         num_variables: circuit_json.num_variables,
         constraints,
     }
-}
-
-/// load r1cs from bin file by filename
-fn load_r1cs_from_bin_file<G1, G2>(filename: &Path) -> R1CS<<G1 as Group>::Scalar>
-where
-    G1: Group<Base = <G2 as Group>::Scalar>,
-    G2: Group<Base = <G1 as Group>::Scalar>,
-{
-    let reader = OpenOptions::new()
-        .read(true)
-        .open(filename)
-        .expect("unable to open.");
-    load_r1cs_from_bin::<_, G1, G2>(BufReader::new(reader))
 }
 
 /// load r1cs from bin by a reader
